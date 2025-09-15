@@ -167,6 +167,27 @@ function deleteTask(id) {
   console.log(`Task with ID ${id} deleted successfully`);
 }
 
+function markTask(id, newStatus) {
+  if (!id) {
+    console.log('Error: Task ID must be provided');
+    return;
+  }
+
+  const tasks = loadTasks();
+  const task = tasks.find((task) => task.id === parseInt(id));
+
+  if (!task) {
+    console.log(`Error: Task with ID ${id} not found`);
+    return;
+  }
+
+  task.status = newStatus;
+  task.updatedAt = new Date().toISOString();
+
+  saveTasks(tasks);
+  console.log(`Task with ID ${id} marked as ${newStatus}`);
+}
+
 const args = process.argv.slice(2);
 const command = args[0];
 
@@ -188,8 +209,16 @@ switch (command) {
     const deleteId = args[1];
     deleteTask(deleteId);
     break;
+  case 'mark-in-progress':
+    const progressId = args[1];
+    markTask(progressId, 'in-progress');
+    break;
+  case 'mark-done':
+    const doneId = args[1];
+    markTask(doneId, 'done');
+    break;
   default:
     console.log(
-      'Unknown command. Available commands: add, list, update, delete'
+      'Unknown command. Available commands: add, list, update, delete, mark-in-progress, mark-done'
     );
 }
