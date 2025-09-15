@@ -121,6 +121,32 @@ function listTasks(status) {
   displayTasks(filteredTasks);
 }
 
+function updateTask(id, newDescription) {
+  if (!id) {
+    console.log('Error: Task ID must be provided');
+    return;
+  }
+
+  if (!newDescription || newDescription.trim() === '') {
+    console.log('Error: Description must be provided');
+    return;
+  }
+
+  const tasks = loadTasks();
+  const task = tasks.find((task) => task.id === parseInt(id));
+
+  if (!task) {
+    console.log(`Error: Task with ID ${id} not found`);
+    return;
+  }
+
+  task.description = newDescription.trim();
+  task.updatedAt = new Date().toISOString();
+
+  saveTasks(tasks);
+  console.log(`Task with ID ${id} updated successfully`);
+}
+
 const args = process.argv.slice(2);
 const command = args[0];
 
@@ -133,6 +159,11 @@ switch (command) {
     const status = args[1];
     listTasks(status);
     break;
+  case 'update':
+    const updateId = args[1];
+    const newDescription = args[2];
+    updateTask(updateId, newDescription);
+    break;
   default:
-    console.log('Unknown command. Available commands: add, list');
+    console.log('Unknown command. Available commands: add, list, update');
 }
