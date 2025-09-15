@@ -147,6 +147,26 @@ function updateTask(id, newDescription) {
   console.log(`Task with ID ${id} updated successfully`);
 }
 
+function deleteTask(id) {
+  if (!id) {
+    console.log('Error: Task ID must be provided');
+    return;
+  }
+
+  const tasks = loadTasks();
+  const taskIndex = tasks.findIndex((task) => task.id === parseInt(id));
+
+  if (taskIndex === -1) {
+    console.log(`Error: Task with ID ${id} not found`);
+    return;
+  }
+
+  tasks.splice(taskIndex, 1);
+  saveTasks(tasks);
+
+  console.log(`Task with ID ${id} deleted successfully`);
+}
+
 const args = process.argv.slice(2);
 const command = args[0];
 
@@ -164,6 +184,12 @@ switch (command) {
     const newDescription = args[2];
     updateTask(updateId, newDescription);
     break;
+  case 'delete':
+    const deleteId = args[1];
+    deleteTask(deleteId);
+    break;
   default:
-    console.log('Unknown command. Available commands: add, list, update');
+    console.log(
+      'Unknown command. Available commands: add, list, update, delete'
+    );
 }
